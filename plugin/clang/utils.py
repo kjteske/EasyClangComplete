@@ -166,6 +166,62 @@ class ClangUtils:
         return result
 
     @staticmethod
+    def debug_cursor(cursor):
+        """Log some information from cursor.
+
+        Args:
+            cursor (cindex.Cursor): cursor
+        """
+        if not cursor:
+            log.debug("No cursor")
+            return
+
+        log.debug("cursor.displayname: %s" % cursor.displayname)
+
+        if cursor.location:
+            log.debug("cursor.location: line %u, column %u" %
+                (cursor.location.line, cursor.location.column))
+        else:
+            log.debug("No cursor.location")
+        if cursor.spelling:
+            log.debug("cursor.spelling: %s" % cursor.spelling)
+        else:
+            log.debug("No cursor.location")
+
+        log.debug("cursor.kind: %s" % cursor.kind)
+        log.debug("cursor.kind.is_declaration(): %s" %
+            cursor.kind.is_declaration())
+
+        if cursor.referenced:
+            log.debug("cursor.referenced.kind: %s" % cursor.referenced.kind)
+        else:
+            log.debug("No cursor.referenced")
+
+        if cursor.type.spelling:
+            log.debug("cursor.type.spelling: %s" % cursor.type.spelling)
+        else:
+            log.debug("No cursor.type.spelling")
+
+        if cursor.result_type.spelling:
+            log.debug("cursor.result_type.spelling: %s" %
+                cursor.result_type.spelling)
+        else:
+            log.debug("No cursor.result_type.spelling")
+        log.debug("cursor.result_type.kind: %s" % cursor.result_type.kind)
+        log.debug("cursor.result_type.get_result().spelling: %s" %
+            cursor.result_type.get_result().spelling)
+
+        log.debug("cursor.arguments:")
+        i = 0
+        for arg in cursor.get_arguments():
+            i = i + 1
+            log.debug("\tArg %i type spelling: %s" % (i, arg.type.spelling))
+            if arg.spelling:
+                log.debug("\tArg %i spelling: %s" % (i, arg.spelling))
+            else:
+                log.debug("\tArg %i has no spelling" % i)
+
+    @staticmethod
     def build_info_details(cursor, function_kinds_list):
         """Provide information about given cursor.
 
