@@ -244,6 +244,8 @@ class Completer(BaseCompleter):
 
             cursor = self.tu.cursor.from_location(
                 self.tu, self.tu.get_location(view.file_name(), (row, col)))
+
+            ClangUtils.debug_cursor(cursor);
             if not cursor or cursor.kind.is_declaration():
                 return empty_info
             if cursor.kind in self.objc_message_kinds_list:

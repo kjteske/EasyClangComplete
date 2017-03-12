@@ -232,6 +232,7 @@ class ClangUtils:
 
         """
         result = ""
+        ClangUtils.debug_cursor(cursor)
         if cursor.result_type.spelling:
             cursor_type = cursor.result_type
         elif cursor.type.spelling:
@@ -314,6 +315,12 @@ class ClangUtils:
             cursor (Cursor): Current cursor.
         """
         result = ""
+        log.debug("OBJC BUILD INFO DETAILS")
+        log.debug("***** Orig cursor *****")
+        ClangUtils.debug_cursor(cursor)
+        log.debug("***** Referenced cursor *****")
+        ClangUtils.debug_cursor(cursor.referenced)
+
         return_type = cursor.type
         result += ClangUtils.link_from_location(
             ClangUtils.location_from_type(return_type),
@@ -343,4 +350,5 @@ class ClangUtils:
             result += "<br><br><b>"
             result += method_cursor.brief_comment + "</b>"
 
+        log.debug("Final result: %s" % result)
         return result
