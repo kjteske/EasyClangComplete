@@ -100,6 +100,8 @@ class Completer(BaseCompleter):
         end = time.time()
         log.debug(" code complete done in %s seconds", end - start)
 
+        for i, line in enumerate(raw_complete):
+            log.debug("raw_complete %i: '%s'" % (i, line))
         completions = Completer._parse_completions(raw_complete)
         log.debug(' completions: %s' % completions)
         return (completion_request, completions)

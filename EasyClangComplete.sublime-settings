@@ -68,7 +68,7 @@
   "use_libclang" : true,
 
   // make plugin verbose
-  "verbose" : false,
+  "verbose" : true,
 
   // add folder with current file with `-I` flag
   "include_file_folder" : true,
