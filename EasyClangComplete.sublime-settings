@@ -18,7 +18,12 @@
     "-I/usr/include",
     "-I$project_base_path/src",
     // this is needed to include the correct headers for clang
-    "-I/usr/lib/clang/$clang_version/include"
+    "-I/usr/lib/clang/$clang_version/include",
+    // Default GNUstep installation paths for Objective-C/C++ support on Windows
+    "-IC:\\GNUstep\\GNUstep\\System\\Library\\Headers",
+    "-IC:\\GNUstep\\include",
+    // Default GNUstep installation path for Objective-C/C++ support on Linux
+    "-I/usr/include/GNUstep",
   ],
   // C specific flags. Prepend common_flags for C files.
   "c_flags" : [
@@ -94,5 +99,18 @@
 
   // Show additional information on hover over function call/variable etc.
   // This replaces default sublime on hover behaviour
-  "show_type_info": true
+  "show_type_info": true,
+
+  // On some esoteric systems we cannot find libclang properly.
+  // If you know where your libclang is - set the full path here.
+  "libclang_path": "<some_path_here>",
+
+  // Pick the progress style. There are currently these styles available:
+  // - "ColorSublime" : '⣾⣽⣻⢿⡿⣟⣯⣷'
+  // - "Moon"         : '🌑🌒🌓🌔🌕🌖🌗🌘'
+  "progress_style": "Moon",
+
+  // Controls if libclang will cache the results.
+  // This works faster, but in rare cases can generate wrong completions.
+  "use_libclang_caching": true
 }
