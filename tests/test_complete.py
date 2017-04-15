@@ -203,7 +203,8 @@ class BaseTestCompleter(object):
 
     def test_complete_objc_property(self):
         """Test that we can complete Objective C properties."""
-        if not should_run_objc_tests(): return
+        if not should_run_objc_tests():
+            return
         file_name = path.join(path.dirname(__file__),
                               'test_files',
                               'test_property.m')
@@ -230,7 +231,8 @@ class BaseTestCompleter(object):
 
     def test_complete_objc_void_method(self):
         """Test that we can complete Objective C void methods."""
-        if not should_run_objc_tests(): return
+        if not should_run_objc_tests():
+            return
         file_name = path.join(path.dirname(__file__),
                               'test_files',
                               'test_void_method.m')
@@ -257,7 +259,8 @@ class BaseTestCompleter(object):
 
     def test_complete_objc_method_one_parameter(self):
         """Test that we can complete Objective C methods with one parameter."""
-        if not should_run_objc_tests(): return
+        if not should_run_objc_tests():
+            return
         file_name = path.join(path.dirname(__file__),
                               'test_files',
                               'test_method_one_parameter.m')
@@ -285,7 +288,8 @@ class BaseTestCompleter(object):
 
     def test_complete_objc_method_multiple_parameters(self):
         """Test that we can complete Objective C methods with 2+ parameters."""
-        if not should_run_objc_tests(): return
+        if not should_run_objc_tests():
+            return
         file_name = path.join(path.dirname(__file__),
                               'test_files',
                               'test_method_two_parameters.m')
@@ -315,8 +319,8 @@ class BaseTestCompleter(object):
 
     def test_complete_objcpp(self):
         """Test that we can complete code in Objective-C++ files."""
-        if not should_run_objc_tests(): return
-
+        if not should_run_objc_tests():
+            return
         file_name = path.join(path.dirname(__file__),
                               'test_files',
                               'test_objective_cpp.mm')
