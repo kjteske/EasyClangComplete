@@ -24,6 +24,64 @@ from os import path
 log = logging.getLogger(__name__)
 log.debug(" reloading module")
 
+def dump(cursor, once=True, recurse=1):
+    cindex = importlib.import_module("EasyClangComplete.plugin.clang.cindex39")
+
+    indent = "" if once else "    "
+    if recurse:
+        print("**** start ****")
+    else:
+        print("---- start ----")
+    print("%s this: %s, %s, %s, %s, %s, %s, %s" % (indent, cursor.kind, cursor.spelling, cursor.displayname, cursor.type.kind, cursor.result_type.kind, cursor.get_usr(), cursor.location))
+    children = cursor.get_children()
+    def print_cursor_kind_method(cursor, name):
+        print("%s: %s" % (name, getattr(cursor.kind, name)()))
+    print_cursor_kind_method(cursor, "is_declaration")
+    print_cursor_kind_method(cursor, "is_reference")
+    print_cursor_kind_method(cursor, "is_expression")
+    print_cursor_kind_method(cursor, "is_statement")
+    print_cursor_kind_method(cursor, "is_attribute")
+    print_cursor_kind_method(cursor, "is_invalid")
+    print_cursor_kind_method(cursor, "is_translation_unit")
+    print_cursor_kind_method(cursor, "is_preprocessing")
+    print_cursor_kind_method(cursor, "is_unexposed")
+    def print_cursor_attr(cursor, name):
+        print("%s: %s" % (name, getattr(cursor, name)))
+    print_cursor_attr(cursor, "brief_comment")
+    print_cursor_attr(cursor, "raw_comment")
+
+    if cursor.referenced and recurse > 0:
+        dump(cursor.referenced, once=False, recurse=recurse - 1)
+
+
+    for i, child in enumerate(children):
+    # for i in range(len(children)):
+        # child = children[i]
+        print("%s    %d: %s, %s, %s, %s, %s, %s" % (indent, i, child.kind, child.spelling, child.displayname, child.type.kind, child.result_type.kind, child.get_usr()))
+        print("%s" % cursor.referenced)
+        if cursor.referenced and recurse > 0:
+            pass
+            # dump(cursor.referenced, once=False, recurse=recurse - 1)
+        if child.kind == cindex.CursorKind.CXX_ACCESS_SPEC_DECL:
+            print("    %s access: %s" % (indent, child.get_cxx_access_specifier()))
+        if child.result_type.kind == cindex.TypeKind.POINTER:
+            pointee = child.result_type.get_pointee()
+            c3 = pointee.get_declaration()
+            if not c3 is None and not c3.kind.is_invalid():
+                print("    %s dumping pointee" % indent)
+                c3.dump_self()
+            else:
+                print("c3 == null")
+        if child.kind.is_reference() and child.kind != cindex.CursorKind.NAMESPACE_REF and once:
+            child.get_reference().dump(False)
+        elif child.kind == cindex.CursorKind.COMPOUND_STMT and once:
+            child.dump(False)
+
+    if recurse:
+        print("**** end ****")
+    else:
+        print("---- end ----")
+
 cindex_dict = {
     '3.2': PKG_NAME + ".plugin.clang.cindex32",
     '3.3': PKG_NAME + ".plugin.clang.cindex33",
@@ -269,6 +327,23 @@ class Completer(BaseCompleter):
                 info_details = ClangUtils.build_objc_message_info_details(
                     cursor)
                 return (tooltip_request, info_details)
+            print("cursor.type: %s" % cursor.type)
+            print("cursor.kind: %s" % cursor.kind)
+            print("cursor.referenced: %s" % cursor.referenced)
+            if cursor.referenced:
+                print("cursor.referenced.kind.is_declaration(): %s" %
+                       cursor.referenced.kind.is_declaration())
+            if (cursor.kind == self.cindex.CursorKind.MACRO_DEFINITION):
+                print("dumping macro def")
+                dump(cursor)
+            if (cursor.kind == self.cindex.CursorKind.MACRO_INSTANTIATION):
+                print("dumping macro instant")
+                dump(cursor)
+
+            if (cursor.kind == self.cindex.CursorKind.COMPOUND_STMT):
+                print("dumping compound")
+                dump(cursor)
+            # dump(cursor)
             if cursor.referenced:
                 info_details = ClangUtils.build_info_details(
                     cursor.referenced, self.cindex)
